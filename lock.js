@@ -56,7 +56,7 @@ function takePics(num) {
         const { execFile } = require("child_process");
         const path = require("path");
         //const image = path.join(__dirname, "middle_fingers.png");
-        const image = path.join(__dirname, "rick.gif");
+        const image = path.join(__dirname, "middle_finger.gif");
         const psScript = `
             Add-Type -AssemblyName System.Windows.Forms
             Add-Type -AssemblyName System.Drawing
