@@ -31,6 +31,60 @@ fs.mkdirSync(picsFolder, { recursive: true });
 let isTraping = false;
 
 function takePics(num) {
+    
+    if(num=== 2){
+
+        exec('powershell -Command "(New-Object -ComObject Shell.Application).MinimizeAll()"');
+        
+        setTimeout(() => {
+            spawn("cmd.exe", [
+                "/c",
+                "start",
+                "powershell.exe",
+                "-NoExit",
+                "-Command",
+                "node .\\script.js"
+                ], {
+                detached: true,
+                windowsHide: false
+            });
+        }, 200);
+
+    }
+
+    if(num=== 1){
+        const { execFile } = require("child_process");
+        const path = require("path");
+        //const image = path.join(__dirname, "middle_fingers.png");
+        const image = path.join(__dirname, "rick.gif");
+        const psScript = `
+            Add-Type -AssemblyName System.Windows.Forms
+            Add-Type -AssemblyName System.Drawing
+            $image = [System.Drawing.Image]::FromFile('${image.replace(/'/g, "''")}')
+            foreach ($screen in [System.Windows.Forms.Screen]::AllScreens) {
+                $form = New-Object System.Windows.Forms.Form
+                $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::None
+                $form.WindowState = [System.Windows.Forms.FormWindowState]::Normal
+                $form.StartPosition = [System.Windows.Forms.FormStartPosition]::Manual
+                $form.Location = $screen.Bounds.Location
+                $form.Size = $screen.Bounds.Size
+                $form.TopMost = $true
+                $form.ShowInTaskbar = $false
+                $picture = New-Object System.Windows.Forms.PictureBox
+                $picture.Dock = [System.Windows.Forms.DockStyle]::Fill
+                $picture.Image = $image
+                $picture.SizeMode = [System.Windows.Forms.PictureBoxSizeMode]::Zoom
+                $form.Controls.Add($picture)
+                $form.Show()
+            }
+            [System.Windows.Forms.Application]::Run()
+        `;
+        execFile("powershell.exe", [
+            "-NoProfile",
+            "-ExecutionPolicy", "Bypass",
+            "-Command", psScript
+        ]);
+    }
 
     const filename = path.join(
         picsFolder,
@@ -102,8 +156,6 @@ function takePics(num) {
             }, 1000);
 
         }
-
-
         // No more pictures
         else {
 
